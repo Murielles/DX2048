@@ -19,6 +19,9 @@ namespace DX2048
         int tb_y = 0;
         bool size_flag = true;
         int x, y;
+        DataTable Create_dt = new DataTable();
+        int begin_x = 0;
+        int begin_y = 0;
 
         private void cb_buju_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -72,6 +75,8 @@ namespace DX2048
         {
             //初始化
             Reset();
+
+            //画button控件
             for (int i = 0; i < x; i++)
             {
                 tb_x = 0;
@@ -101,13 +106,8 @@ namespace DX2048
             {
                 size_flag = false;
             }
-            Random random_bt = new Random();
-            //随机生成两个2
-            for (int r = 0; r < 2; r++)
-            {
-                int ran = random_bt.Next(1, panel_show.Controls.Count);
-                panel_show.Controls[ran].Text = "2";
-            }
+
+            Random();
         }
 
         /// <summary>
@@ -122,50 +122,89 @@ namespace DX2048
             cb_buju.Text = "";
             this.Width = begin_x;
             this.Height = begin_y;
+            Create_dt = new DataTable();
         }
+
+        void Create_DataTable(string flag)
+        {
+            Create_dt = new DataTable();
+            for (int c = 0; c < y; c++)
+            {
+                Create_dt.Columns.Add();
+                
+            }
+
+            int Control_num = 0;
+            for (int col = 0; col < y; col++)
+            {
+                DataRow dr = Create_dt.NewRow();
+                for (int row = 0; row < x; row++, Control_num++)
+                {
+                    dr[row] = panel_show.Controls[Control_num].Text;
+                }
+                Create_dt.Rows.Add(dr);
+            }
+
+            switch (flag)
+            {
+                case "Down":
+                    {
+                        
+                    }
+                    break;
+                case "Up":
+                    {
+
+                    }
+                    break;
+                case "Right":
+                    {
+
+                    }
+                    break;
+                case "Left":
+                    {
+
+                    }
+                    break;
+                default: break;
+            }
+        }
+
 
         private void bt_reset_Click(object sender, EventArgs e)
         {
             Reset();
         }
 
-        int begin_x = 0;
-        int begin_y = 0;
         
-
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
-            int sum = 0;
+            Random();
+            int Control_num = 0;
+
             if (e.KeyCode == Keys.Down)
             {
-                int control_item = panel_show.Controls.Count - y;
-                int flag = 0;
-                for (int j = 0; j < x; j++, control_item++)
-                {
-                    flag++;
-                    for (int i = 0; i < y; i++)
-                    {
-                        if (panel_show.Controls[flag].Text != "")
-                        {
-                            sum += int.Parse(panel_show.Controls[flag].Text);
-                        }
-                        flag += 4;
-                    }
-                    panel_show.Controls[control_item].Text = sum.ToString();
-                    flag = 0;
-                }
+                Create_DataTable("Down");
             }
             else if (e.KeyCode == Keys.Up)
             {
-
-            }
-            else if (e.KeyCode == Keys.Left)
-            {
-
+                Create_DataTable("Up");
             }
             else if (e.KeyCode == Keys.Right)
             {
-
+                Create_DataTable("Right");
+            }
+            else if (e.KeyCode == Keys.Left)
+            {
+                Create_DataTable("Left");
+            }
+            for (int i = 0; i < Create_dt.Rows.Count; i++)
+            {
+                for (int j = 0; j < Create_dt.Rows[i].ItemArray.Length; j++, Control_num++)
+                {
+                    panel_show.Controls[Control_num].Text = Create_dt.Rows[i][j].ToString();
+                }
             }
         }
 
@@ -173,6 +212,20 @@ namespace DX2048
         {
             begin_x = this.Width;
             begin_y = this.Height;
+        }
+
+        void Random()
+        {
+            Random random_bt = new Random();
+            //随机生成两个2
+            for (int r = 0; r < 2; r++)
+            {
+                int ran = random_bt.Next(0, panel_show.Controls.Count);
+                if (panel_show.Controls[ran].Text == "")
+                {
+                    panel_show.Controls[ran].Text = "2";
+                }
+            }
         }
     }
 }
